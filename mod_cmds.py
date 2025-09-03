@@ -10,32 +10,51 @@ class ModCommands(commands.Cog):
     @commands.command()
     async def clear(self, ctx: commands.Context, amount=1):
         await ctx.message.delete()
-        if amount > 300 or amount < 1:
-            s = await ctx.send(
-                embed=discord.Embed(title=f"Faild!",
-                                    description=f"Faild!\n"
-                                                f"reason : amount should be lower than 300 and higher than 1.\n"
-                                                f"x!help for commands .",
-                                    color=0xFF0000)
-            )
+
+        if ctx.author.guild_permissions.kick_members:
+            if amount > 300 or amount < 1:
+                s = await ctx.send(
+                    embed=discord.Embed(title=f"Faild!",
+                                        description=f"Faild!\n"
+                                                    f"reason : amount should be lower than 300 and higher than 1.\n"
+                                                    f"x!help for commands .",
+                                        color=0xFF0000)
+                )
+
+                await sleep(5)
+                await s.delete()
+                await sleep(5)
+
+                return
+
+            await ctx.send(embed=discord.Embed(title=f"doing your request...",
+                                               description=f"doing your request...\n"
+                                                           f"x!help for commands.",
+                                               color=0x0B5394))
+
+            await ctx.channel.purge(limit=amount + 1)
+
+            s = await ctx.send(embed=discord.Embed(title=f"done", description=f"done!\n"
+                                                                              f"deleted {amount} messages in "
+                                                                              f"{ctx.channel.name} text channel.\n"
+                                                                              f"x!help for commands.",
+                                                   color=0x57ff36))
+
             await sleep(5)
             await s.delete()
             await sleep(5)
-            return
-        textchannel = ctx.channel
-        await ctx.send(embed=discord.Embed(title=f"doing your request...",
-                                           description=f"doing your request...\n"
-                                                       f"x!help for commands.",
-                                           color=0x0B5394))
-        await textchannel.purge(limit=amount + 1)
-        s = await ctx.send(embed=discord.Embed(title=f"done", description=f"done!\n"
-                                                                          f"deleted {amount} messages in "
-                                                                          f"{ctx.channel.name} text channel.\n"
-                                                                          f"x!help for commands.",
-                                               color=0x57ff36))
-        await sleep(5)
-        await s.delete()
-        await sleep(5)
+        else:
+            s = await ctx.send(
+                embed=discord.Embed(title=f"access denied", description=f"your access denied !\n"
+                                                                        f"reason : you dont have "
+                                                                        f"**kick_members** permission .\n"
+                                                                        f"x!help for commands .",
+                                    color=0xFF0000)
+            )
+
+            await sleep(5)
+            await s.delete()
+            await sleep(5)
 
     @clear.error
     async def clear_error(self, ctx: commands.Context, error):
@@ -44,6 +63,7 @@ class ModCommands(commands.Cog):
                                                    description=f"x!clear <amount> ",
                                                    colour=discord.Colour.blue())
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -52,6 +72,7 @@ class ModCommands(commands.Cog):
                                                    description=f"I dont have access to join that channel.",
                                                    colour=discord.Colour.blue())
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -59,15 +80,18 @@ class ModCommands(commands.Cog):
     @commands.command()
     async def kick(self, ctx: commands.Context, member: discord.Member, *, reason: str = "no reason"):
         await ctx.message.delete()
+
         if member.id == ctx.author.id:
             s = await ctx.send(
                 embed=discord.Embed(title=f":|", description=f"Why you wanna kick yourself?\n"
                                                              f"x!help for commands",
                                     color=0x57ff36)
             )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
+
             return
 
         if ctx.author.guild_permissions.kick_members:
@@ -77,6 +101,7 @@ class ModCommands(commands.Cog):
                                                                       f"reason : {reason}",
                                     color=0x57ff36)
             )
+
             await member.kick(reason=reason)
             await sleep(5)
             await s.delete()
@@ -89,6 +114,7 @@ class ModCommands(commands.Cog):
                                                                         f"x!help for commands .",
                                     color=0xFF0000)
             )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -100,6 +126,7 @@ class ModCommands(commands.Cog):
                                                    description=f"x!kick @member ",
                                                    colour=discord.Colour.blue())
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -108,6 +135,7 @@ class ModCommands(commands.Cog):
                                                    description=f"x!kick @member ",
                                                    colour=discord.Colour.blue())
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -116,6 +144,7 @@ class ModCommands(commands.Cog):
                                                    description=f"I dont have ban access.",
                                                    colour=discord.Colour.blue())
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -123,15 +152,18 @@ class ModCommands(commands.Cog):
     @commands.command()
     async def ban(self, ctx: commands.Context, member: discord.Member, *, reason: str = "no reason"):
         await ctx.message.delete()
+
         if member.id == ctx.author.id:
             s = await ctx.send(
                 embed=discord.Embed(title=f":|", description=f"Why you wanna ban yourself?\n"
                                                              f"x!help for commands",
                                     color=0x57ff36)
             )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
+
             return
 
         if ctx.author.guild_permissions.ban_members:
@@ -140,6 +172,7 @@ class ModCommands(commands.Cog):
                                                                                      f"reason : {reason}",
                                                    color=0x57ff36)
                                )
+
             await member.ban(reason=reason)
             await sleep(5)
             await s.delete()
@@ -151,6 +184,7 @@ class ModCommands(commands.Cog):
                                                                                        f"x!help for commands .",
                                                    color=0xFF0000)
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -162,6 +196,7 @@ class ModCommands(commands.Cog):
                                                    description=f"x!ban @member ",
                                                    colour=discord.Colour.blue())
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -170,6 +205,7 @@ class ModCommands(commands.Cog):
                                                    description=f"x!ban @member ",
                                                    colour=discord.Colour.blue())
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -178,6 +214,7 @@ class ModCommands(commands.Cog):
                                                    description=f"I dont have ban access.",
                                                    colour=discord.Colour.blue())
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -187,15 +224,19 @@ class ModCommands(commands.Cog):
     @commands.command()
     async def lock(self, ctx: commands.Context, channel: discord.TextChannel = None):
         await ctx.message.delete()
+
         try:
             if ctx.author.guild_permissions.manage_channels:
                 channel = channel or ctx.channel
                 overwrite = channel.overwrites_for(ctx.guild.default_role).send_messages = False
+
                 await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
+
                 s = await ctx.send(embed=discord.Embed(title=f"Locked.", description=f"by {ctx.author.display_name}\n"
                                                                                      f"x!help for commands .",
                                                        color=0xFF0000)
                                    )
+
                 await sleep(5)
                 await s.delete()
                 await sleep(5)
@@ -207,24 +248,26 @@ class ModCommands(commands.Cog):
                                                                                             f"x!help for commands .",
                                                        color=0xFF0000)
                                    )
+
                 await sleep(5)
                 await s.delete()
                 await sleep(5)
 
         except discord.errors.Forbidden:
-            embed = discord.Embed(title=f"No perm",
+            await ctx.send(embed=discord.Embed(title=f"No perm",
                                   description=f"I have no permission to manage channels\n"
-                                              f"x!help for commands .", color=0xFF0000)
-            await ctx.send(embed=embed)
+                                              f"x!help for commands .", color=0xFF0000))
 
     @commands.command()
     async def unlock(self, ctx: commands.Context, channel: discord.TextChannel = None):
         await ctx.message.delete()
+
         try:
             if ctx.author.guild_permissions.manage_channels:
                 channel = channel or ctx.channel
                 overwrite = channel.overwrites_for(ctx.guild.default_role)
                 overwrite.send_messages = True
+
                 await channel.set_permissions(ctx.guild.default_role, overwrite=overwrite)
                 await ctx.send(f"{channel.mention} unlocked!")
             else:
@@ -235,18 +278,19 @@ class ModCommands(commands.Cog):
                                                                                             f"x!help for commands .",
                                                        color=0xFF0000)
                                    )
+
                 await sleep(5)
                 await s.delete()
                 await sleep(5)
         except discord.errors.Forbidden:
-            embed = discord.Embed(title=f"I need access",
+            await ctx.send(embed=discord.Embed(title=f"I need access",
                                   description=f"I have no no permission to manage channels\n"
-                                              f"x!help for commands .", color=0xFF0000)
-            await ctx.send(embed=embed)
+                                              f"x!help for commands .", color=0xFF0000))
 
     @commands.command()
     async def role(self, ctx: commands.Context, args, member: discord.Member, role: discord.Role):
         await ctx.message.delete()
+
         if not ctx.author.guild_permissions.manage_channels:
             s = await ctx.send(embed=discord.Embed(title=f"access denied?", description=f"your access denied !\n"
                                                                                         f"reseon : you dont have "
@@ -255,41 +299,50 @@ class ModCommands(commands.Cog):
                                                                                         f"x!help for commands .",
                                                    color=0xFF0000)
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
-            return
+
         args = args.lower()
-
-
 
         if args == 'add':
             if role == ctx.author.top_role:
                 s = await ctx.send("his weanie is much bigger than yours is")
+
                 await sleep(5)
                 await s.delete()
                 await sleep(5)
-                return
+
+                return None
 
             if role in member.roles:
                 s = await ctx.send("he got this in his basement, already")
+
                 await sleep(5)
                 await s.delete()
                 await sleep(5)
-                return
+
+                return None
 
             if role.position >= ctx.guild.me.top_role.position:
                 s = await ctx.send(f"his weanie is much bigger than mine is")
+
                 await sleep(5)
                 await s.delete()
                 await sleep(5)
-                return
+
+                return None
 
             await member.add_roles(role)
+
             s = await ctx.send(f"I've added {member.mention} the role {role.mention}")
+
             await sleep(5)
             await s.delete()
             await sleep(5)
+
+            return None
 
         elif args == 'remove':
 
@@ -304,3 +357,5 @@ class ModCommands(commands.Cog):
 
             await member.remove_roles(role)
             await ctx.send(f"I have removed {member.mention} the role {role.mention}")
+
+        return None

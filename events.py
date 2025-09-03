@@ -1,16 +1,25 @@
 import time
 
 import discord
-import openai
 from discord.ext import commands
+from openai import OpenAI
+
+client = OpenAI(api_key='key here')
+
+
+async def getchatgptanswer(message: discord.Message):
+    return client.responses.create(
+            model="gpt-3.5-turbo",
+            input=message.content,
+    ).output_text
 
 
 class Events(commands.Cog):
     queues = {
     }
 
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, cl):
+        self.client = cl
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.message.Message):
@@ -30,21 +39,7 @@ class Events(commands.Cog):
                     return
                 else:
                     self.queues.pop(message.author.name)
-                    await self.getchatgptanswer(message)
-
-    async def getchatgptanswer(self, message: discord.Message):
-
-        response = openai.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "developer", "content": "is SyNdicateFoundation bot"},
-                {
-                    "role": "user",
-                    "content": message.content,
-                },
-            ],
-        )
-        return response['choices'][0]['message']['content']
+                    await getchatgptanswer(message)
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -54,7 +49,4 @@ class Events(commands.Cog):
         try:
             await bot_entry[0].user.send(embed=join)
         except discord.errors.Forbidden:
-            try:
-                await guild.system_channel.send(embed=join)
-            except:
-                pass
+            await guild.system_channel.send(embed=join)

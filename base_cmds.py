@@ -5,9 +5,9 @@ from asyncio import sleep
 
 
 class BaseCommands(commands.Cog):
-    def __init__(self, client, starttime):
+    def __init__(self, client, stt):
         self.client = client
-        self.starttime = starttime
+        self.stt = stt
 
     @commands.command()
     async def help(self, ctx: commands.Context):
@@ -38,15 +38,14 @@ class BaseCommands(commands.Cog):
 
     @commands.command()
     async def stats(self, ctx: commands.Context):
-        member_count = len(ctx.guild.members)
-        realmembers = len([m for m in ctx.guild.members if not m.bot])
-        embed = discord.Embed(title=f"Bot stats",
-                              description=f"servers : {len(self.client.guilds)}\n"
-                                          f"members : {member_count}\n"
-                                          f"ping : {round(self.client.latency * 1000)}\n"
-                                          f"real members : {round(realmembers)}"
-                                          f"x!help for commands", color=0x0B5394)
-        await ctx.send(embed=embed)
+        await ctx.send(embed=
+                       discord.Embed(title=f"Bot stats",
+                                     description=f"servers : {len(self.client.guilds)}\n"
+                                                 f"members : {len(ctx.guild.members)}\n"
+                                                 f"ping : {round(self.client.latency * 1000)}\n"
+                                                 f"real members : {round(len([m for m in ctx.guild.members if not m.bot]))}"
+                                                 f"x!help for commands", color=0x0B5394)
+                       )
 
     @commands.command()
     async def invite_link(self, ctx: commands.Context):
@@ -59,9 +58,11 @@ class BaseCommands(commands.Cog):
                                                                               f"x!help for commands",
                                                    color=0x0B5394)
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
+
             s = await ctx.send(
                 embed=discord.Embed(title=f"Ping", description=f"test 1 : {round(self.client.latency * 1000)} ms\n"
                                                                f"test 2 : {round(self.client.latency * 1000)} ms\n"
@@ -69,13 +70,16 @@ class BaseCommands(commands.Cog):
                                                                f"x!help for commands",
                                     color=0x0B5394)
             )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
+
             s = await ctx.send(embed=discord.Embed(title=f"Ping", description=f"Done ?\n"
                                                                               f"x!help for commands",
                                                    color=0x57ff36)
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -84,6 +88,7 @@ class BaseCommands(commands.Cog):
                                                    description=f"please try later\n"
                                                                f"x!help for commands",
                                                    color=0x0B5394)
+
                                )
             await sleep(5)
             await s.delete()
@@ -91,20 +96,19 @@ class BaseCommands(commands.Cog):
 
     @commands.command()
     async def uptime(self, ctx: commands.Context):
-        uptime = datetime.datetime.utcnow() - self.starttime
-        hour = str(uptime).split('.')[0]
         await ctx.send(embed=discord.Embed(title="Uptime",
-                                           description=f"{uptime}",
+                                           description=f"{datetime.datetime.now(datetime.UTC) - self.stt}",
                                            color=discord.Colour.blue()))
 
     @commands.command()
-    async def serverlist(self, ctx: commands.Context):
+    async def server_list(self, ctx: commands.Context):
         if ctx.author.id == 1042894447815430229:
-            msg = "\n".join(f"{x}" for x in self.client.guilds)
-            s = await ctx.send(embed=discord.Embed(title=f"server list", description=f"```\n{msg}\n```\n"
+            s = await ctx.send(embed=discord.Embed(title=f"server list",
+                                                   description=f"```\n{"\n".join(f"{x}" for x in self.client.guilds)}\n```\n"
                                                                                      f"x!help for commands",
                                                    color=0x57ff36)
                                )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
@@ -113,6 +117,7 @@ class BaseCommands(commands.Cog):
                 embed=discord.Embed(title=f"Only dev can use this.", description=f"this is only owner command .\n"
                                                                                  f"x!help for commands", color=0x57ff36)
             )
+
             await sleep(5)
             await s.delete()
             await sleep(5)
